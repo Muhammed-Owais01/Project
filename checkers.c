@@ -323,27 +323,6 @@ void result(char board[][SIZE]){
       return ;
 }
 
-///play game in the function
-void playgame(char board[][SIZE],int i){
-        int a=chack(board);
-       if(a==0){
-          result(board);
-           return;
-       }
-       if(i%2==0){
-        printf("Turn of Player 1\n");
-        fsinput(board);//call the function  1st person input
-       }
-       else{
-          printf("Turn of Player 2\n");
-         scinput(board);//call the function 2nd person input
-       }
-       system("cls");
-       display(board);
-       playgame(board,i-1);
-
-       return;
-}
 
 // Play game in the function
 void playgame(char board[][SIZE],int i){
