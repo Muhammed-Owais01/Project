@@ -34,6 +34,12 @@ char board[SIZE][SIZE] =  {{'X', ' ', 'X', ' ','X', ' ', 'X', ' '},
     return 1;
  }//end of conferm2
 
+void movepice(char board[][SIZE],int irow,int icol,int frow,int fcol,char a){
+         board[irow][icol]=' ';
+         board[frow][fcol]=a;
+    return;
+}
+
 //this function chack if user move 2 col or row it can chack back
  int chackforbak(char board[][SIZE],int row,int col,int curent_row,int curent_col){
          char a=board[curent_row][curent_col];
