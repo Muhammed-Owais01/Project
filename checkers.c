@@ -33,3 +33,24 @@ char board[SIZE][SIZE] =  {{'X', ' ', 'X', ' ','X', ' ', 'X', ' '},
     }else
     return 1;
  }//end of conferm2
+
+// Display board
+void display(char board[][SIZE]){
+      printf("====================\n");
+      printf("  ||0|1|2|3|4|5|6|7|\n");
+      printf(" _|=================\n");
+      for ( int i = 0; i < SIZE;i++){
+        printf("|%d|", i);
+        for (int j = 0; j < SIZE; j++){
+            printf("|");
+            printf("%c",board[i][j] );
+        }
+         printf("|");
+         if(i==7){
+            printf("\n====================");
+         }
+        printf("\n");
+      }
+       printf("Player 1 is: X\nPlayer 2 is: O\n");
+      return;
+}//end of display
