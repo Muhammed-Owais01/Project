@@ -172,6 +172,65 @@ void fsinput(char board[][SIZE]){
     return;
 }//end of input of frist preson
 
+// this functon checks for base condition to stop game
+int check(char board[][SIZE]){
+        bool flag=true;
+        char searchChar='X';
+        for(int i=0 ; i <SIZE;i++){
+             if(strchr(board[i],searchChar)!=NULL){
+                flag=false;   
+                break;
+            }
+        }
+        
+        if (flag==true){
+            return 0;
+        }
+
+         flag= true;
+         searchChar='O';
+         for(int i = 0; i < SIZE; i++){
+             if(strchr(board[i], searchChar)!=NULL){
+                flag=false;  
+                break;
+        }
+         }
+        
+        if (flag==true){
+            return 0;
+        }else
+      return 1;
+}
+
+void result(char board[][SIZE]){
+    bool flag=true;
+        char searchChar ='X';
+      for(int i = 0; i < SIZE; i++){
+        if(strchr(board[i],searchChar)!=NULL){
+            flag=false;
+            break;
+        }
+      }//end of for
+      if(flag){
+        printf("Player 2 Wins\n");
+            return ;
+      }else
+      flag=true;
+
+      searchChar='O';
+      for (int i = 0 ; i < SIZE; i++){
+        if(strchr(board[i],searchChar)!=NULL){
+            flag=false;
+            break;
+        }
+      }//end  of for loop 
+      if (flag){
+        printf("Player 1 Wins\n");
+            return ;
+      }
+      return ;
+}
+
 ///play game in the function
 void playgame(char board[][SIZE],int i){
         int a=chack(board);
