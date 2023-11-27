@@ -34,6 +34,29 @@ char board[SIZE][SIZE] =  {{'X', ' ', 'X', ' ','X', ' ', 'X', ' '},
     return 1;
  }//end of conferm2
 
+//this function chack if user move 2 col or row it can chack back
+ int chackforbak(char board[][SIZE],int row,int col,int curent_row,int curent_col){
+         char a=board[curent_row][curent_col];
+         char c;
+         char b=' ';
+         if(a=='X'){
+            c='O';
+         }else
+           c='X';
+         if(board[row][col]==b){
+            return 0;
+         }else
+          if(board[row][col]==a){
+            return 0;
+         }else
+         {
+            if(board[row][col]==c){
+                board[row][col]=' ';
+            }
+       }
+    return 1;
+ }
+
 // Display board
 void display(char board[][SIZE]){
       printf("====================\n");
