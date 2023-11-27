@@ -178,6 +178,92 @@ void fsinput(char board[][SIZE]){
     return;
 }//end of input of frist preson
 
+// Second Player input is checked
+void scinput(char board[][SIZE]){
+    // Variables to find current location of piece
+    int rowintial, colintial;
+    int row, col;
+    int i = 1;
+    int a;
+    //Loop for initial position of the piece
+    while(i==1){
+        printf("Enter Row, Column Of The Man You Want To Move: ");
+        scanf("%d %d", &rowintial, &colintial);
+        // conferm1 checks if piece is present at input location or not
+        a =  conferm1(board,rowintial,colintial,'O');
+        if ((rowintial < 0 || rowintial > 7) || (colintial < 0 || colintial > 7)) {
+            printf("INVALID INPUT: OUT OF BOUNDS!\n");
+        } else if (a == 0) {
+            printf("INVALID LOCATION ENTERED: YOU DONT HAVE A PIECE HERE\n");
+        } else {
+            i = -1;
+        }
+    }
+    i = 1;
+
+    //Input for new location to move to 
+    while (i == 1) {
+        printf("Enter Row, Column Where You Want To Move: ");
+        scanf("%d %d", &row, &col);
+
+        // conferm2 checks if piece is present at input location or not
+        a = conferm2(board, row, col);
+
+        int difrow = (rowintial - row);
+        int difcol = (colintial - col);
+        int b, c;
+        // Used a MODULUS (Mathematics one)
+        if (difrow < 0){
+            b = difrow * (-1);
+        } else {
+            b = difrow;
+        }
+        if (difcol < 0) {
+            c = difcol * (-1);
+        } else {
+            c = difcol;
+        }
+
+        
+        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
+            printf("INVALID INPUT: OUT OF BOUNDS!\n");
+        } else if (a == 0) {
+            printf("INVALID LOCATION ENTERED: A PIECE IS ALREADY THERE!\n");
+        } else if (difrow > 2 || difcol > 2) {
+            printf("You cannot move to this location\n");
+        } else if (b != c){
+            printf("INVALID LOCATION ENTERED: YOU CAN ONLY MOVE DIAGONALLY\n");
+        } else if (b == 2 && c == 2) {
+            if (difrow > 0) {
+                switch (difcol) {
+                    case 2:
+                        if (chackforbak(board, row + 1,col +1, rowintial, colintial) != 1) {
+                            printf("Incorrect Move, Enter A Valid Address\n");
+                        }
+                    case -2:
+                        if(chackforbak(board,row+1,col-1,rowintial,colintial) != 1){
+                            printf("Incorrect Move, Enter A Valid Address\n");
+                        }
+                    default:
+                        i = -1;
+                }
+            }
+        } else if (b == 1 && c == 1) {
+            if (board[row][col] != ' ') {
+                printf("INVALID LOCATION ENTERED: A PIECE IS ALREADY THERE!\n");
+            } else{
+                i = -1;
+            }
+        } else {
+           i = -1;
+        }
+    }
+
+    movepice(board,rowintial,colintial,row,col,'O');
+
+    return;
+}//end of input of second player
+
 // this functon checks for base condition to stop game
 int check(char board[][SIZE]){
         bool flag=true;
