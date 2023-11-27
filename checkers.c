@@ -344,3 +344,42 @@ void playgame(char board[][SIZE],int i){
 
        return;
 }
+
+// Play game in the function
+void playgame(char board[][SIZE],int i){
+
+    int a = check(board);
+    if (a == 0){
+        result(board);
+        return;
+    }
+    if (i % 2 == 0){
+        printf("Turn of Player 1\n");
+        // Call the function for 1st Player Input
+        fsinput(board);
+    }
+    else{
+        printf("Turn of Player 2\n");
+        // Call the function for 2nd Player Input
+        scinput(board);
+    }
+    system("cls");
+    display(board);
+    playgame(board,i-1);
+
+    return;
+}
+
+ int main()
+{
+
+    system("cls");
+    display(board);
+    // c for columns, r for rows
+    int c, r;
+    
+    playgame(board,3000);
+
+     
+    return 0;
+}
