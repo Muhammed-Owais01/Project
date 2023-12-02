@@ -6,12 +6,13 @@
 
 
 // Initializing board
-char board[SIZE][SIZE] =  {{'X', ' ', 'X', ' ','X', ' ', 'X', ' '},
+char board[SIZE][SIZE] =  {
+                          {'X', ' ', 'X', ' ', 'X', ' ', 'X', ' '},
                           {' ', 'X', ' ', 'X', ' ', 'X', ' ', 'X'},
                           {'X', ' ', 'X', ' ', 'X', ' ', 'X', ' '},
                           {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
                           {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-                          {' ', 'O', ' ', 'O', ' ', 'O', ' ', 'O'},
+                          {' ', 'O', ' ', 'O', ' ', ' ', ' ', 'O'},
                           {'O', ' ', 'O', ' ', 'O', ' ', 'O', ' '},
                           {' ', 'O', ' ', 'O', ' ', 'O', ' ', 'O'}};
 // To confirm is a piece is present on the location
@@ -199,7 +200,7 @@ void playerInput(char board[][SIZE], char piece)
         else {
             if (a == 0) {
                 // if king is there then i = -1, so that loop can end
-                if (board[current_row][current_col] != 'K' || board[current_row][current_col] != 'Q') {
+                if (board[current_row][current_col] != 'K' && board[current_row][current_col] != 'Q') {
                     printf("INVALID LOCATION ENTERED: YOU DONT HAVE A PIECE HERE\n");
                 } else i = -1;
             } else i = -1;
