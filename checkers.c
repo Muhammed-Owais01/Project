@@ -116,6 +116,7 @@ void move_piece(char board[][SIZE],int irow,int icol,int frow,int fcol,char a)
     }
     return;
 }
+
 // king function 
 int king(char board[][SIZE],int current_row,int current_col,int diag_row,int diag_col, int up_or_down,int left_or_right,int b,int c)
 {
@@ -452,10 +453,10 @@ int main(int argc, char const *argv[])
 {
 	system("cls");
 	display(board);
-    // c for col, r for row
+    	// c for col, r for row
 	int c,r;
     
-    playgame(board,3000);
+    	playgame(board,3000);
      
 	return 0;
 }
