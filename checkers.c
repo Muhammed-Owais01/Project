@@ -2,6 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<stdbool.h>
+#include <ctype.h>
 #include <Windows.h>
 #define SIZE 8
 
@@ -25,7 +26,7 @@ int confirm_piece(char board[][SIZE],int current_row,int current_column,char ch)
  		return 1;
     else
         return 0;
-}//end of confirm_piece
+} //end of confirm_piece
 
 // Confirming if there is a space or not (when moving to a location where a piece is already present)
 int confirm_space(char board[][SIZE],int final_row,int final_column) 
@@ -35,7 +36,7 @@ int confirm_space(char board[][SIZE],int final_row,int final_column)
  		return 0;
  	else
         return 1;
-}//end of confirm_space
+} //end of confirm_space
 
 // this function is responsible for removing a piece on the board
 int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,int curent_col)
@@ -69,7 +70,7 @@ int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,in
         }
  	}
  	
-}
+} // end of capture_piece
 
 void setColor(int color)
 {
@@ -87,7 +88,7 @@ void pieceColor(char piece)
         // 1 is the color blue
         setColor(1);
     }
-}
+} // end of pieceColor
 
 //Display the board
 void display(char board[][SIZE])
@@ -100,7 +101,7 @@ void display(char board[][SIZE])
 
     for (int i = 0; i < SIZE;i++) {
         setColor(14);
-      	printf("|%d|", i);
+      	printf("|%c|", i + 65);
         for (int j = 0; j < SIZE; j++) {
             setColor(14);
       		printf("|");
@@ -136,7 +137,7 @@ void display(char board[][SIZE])
     setColor(15);
 
     return;
-}//end of display
+} //end of display
 
 
 // this function moves a piece, and replaces space in a previous location the piece was at
@@ -162,7 +163,8 @@ void move_piece(char board[][SIZE],int irow,int icol,int frow,int fcol,char a)
         board[frow][fcol] = a;
     }
     return;
-}
+} // end of move_piece
+
 // king function 
 int king(char board[][SIZE],int current_row,int current_col,int diag_row,int diag_col, int up_or_down,int left_or_right,int b,int c)
 {
@@ -176,13 +178,11 @@ int king(char board[][SIZE],int current_row,int current_col,int diag_row,int dia
                 case 2:
                     // if capture_piece is not 1 then that means incorrect final location was entered
                     if (capture_piece(board, diag_row + 1,diag_col + 1, current_row, current_col) != 1) {
-                        printf("INVALID LOCATION ENTERED: YOU CAN ONLY MOVE DIAGONALLY\n");
                         return 1;
                     }
                 // when moving leftwards
                 case -2:
                     if (capture_piece(board, diag_row + 1, diag_col - 1, current_row, current_col) != 1) {
-                        printf("INVALID LOCATION ENTERED: YOU CAN ONLY MOVE DIAGONALLY\n");
                         return 1;
                     }
                 default: return 0;
@@ -193,12 +193,10 @@ int king(char board[][SIZE],int current_row,int current_col,int diag_row,int dia
             switch (left_or_right) {
                 case -2:
                     if (capture_piece(board, diag_row - 1, diag_col - 1, current_row, current_col) != 1) {
-                        printf("INVALID LOCATION ENTERED: YOU CAN ONLY MOVE DIAGONALLY\n");
                         return 1;
                     }
                 case 2: 
                     if (capture_piece(board, diag_row - 1, diag_col + 1, current_row, current_col) != 1) {
-                        printf("INVALID LOCATION ENTERED: YOU CAN ONLY MOVE DIAGONALLY\n");
                         return 1;
                     }    
                 default: return 0;
@@ -224,6 +222,7 @@ void playerInput(char board[][SIZE], char piece)
 {
     // to find current location of the piece
     int current_row, current_col;
+    char current_letter, final_letter;
     // to get location to move to
     int final_row, final_col;
     int i = 1;
@@ -232,7 +231,9 @@ void playerInput(char board[][SIZE], char piece)
     //loop ends when correct location is entered by the user
     while (i == 1) {
         printf("Enter Row, Column Of The Man You Want To Move: ");
-        scanf("%d %d", &current_row, &current_col);
+        scanf(" %c%d", &current_letter, &current_col);
+        current_row = toupper(current_letter) - 65;
+
         // confirm_piece returns 1 if input was valid 
         a =  confirm_piece(board, current_row, current_col, piece);
         // checks if input was out of bounds
@@ -254,7 +255,8 @@ void playerInput(char board[][SIZE], char piece)
     //loop ends when location to move to is correctly entered by the user
     while (i > 0) {
         printf("Enter Row, Column Where You Want To Move: ");
-        scanf("%d %d", &final_row, &final_col);
+        scanf(" %c%d", &final_letter, &final_col);
+        final_row = toupper(final_letter) - 65;
 
         // returns 1 if the location to move to is empty
         a =  confirm_space(board, final_row, final_col);
@@ -345,18 +347,18 @@ void playerInput(char board[][SIZE], char piece)
     // moves the piece to the final location after middle location has been set to space
     move_piece(board, current_row, current_col, final_row, final_col, board[current_row][current_col]);
     return;
-}//end of input of first player
+} //end of input of player
 
 
 // this functon checks for base condition to stop game
-int check(char board[][SIZE], char searchChar)
+int check(char board[][SIZE], char searchChar, char kingOrQueen)
 {
     bool flag = true;
     // search for player piece
 
     for (int i = 0; i < SIZE; i++) {
         // strchr checks every column of a row without the need of another for loop
-        if (strchr(board[i], searchChar) != NULL) {
+        if (strchr(board[i], searchChar) != NULL || strchr(board[i], kingOrQueen) != NULL) {
             // if a piece is found then set to false and break
             flag = false;   
             break;
@@ -366,18 +368,18 @@ int check(char board[][SIZE], char searchChar)
     if (flag == true) {
     	return 0;
     }
-}
+} // end of check
 
 
-///play game in the function
-void playgame(char board[][SIZE], int i)
+// play game in the function
+void playGame(char board[][SIZE], int i)
 {
-    if (check(board, 'X') == 0) {
+    if (check(board, 'X', 'K') == 0) {
         setColor(1);
         printf("Player 2 Wins\n");
    	    return;
     }
-    if (check(board, 'O') == 0)
+    if (check(board, 'O', 'Q') == 0)
     {
         setColor(4);
         printf("Player 1 Wins\n");
@@ -405,10 +407,10 @@ void playgame(char board[][SIZE], int i)
 
     system("cls");
     display(board);
-    playgame(board,i-1);
+    playGame(board,i-1);
 
     return;
-}
+} // end of playGame
 
 int main(int argc, char const *argv[])
 {
@@ -417,7 +419,7 @@ int main(int argc, char const *argv[])
     // c for col, r for row
 	int c,r;
     
-    playgame(board,3000);
+    playGame(board,3000);
      
 	return 0;
 }
