@@ -349,11 +349,10 @@ void playerInput(char board[][SIZE], char piece)
 
 
 // this functon checks for base condition to stop game
-int check(char board[][SIZE])
+int check(char board[][SIZE], char searchChar)
 {
     bool flag = true;
-    // search for player 1 piece
-    char searchChar = 'X';
+    // search for player piece
 
     for (int i = 0; i < SIZE; i++) {
         // strchr checks every column of a row without the need of another for loop
@@ -364,39 +363,25 @@ int check(char board[][SIZE])
         }
     }
     
-    if (flag==true) {
-        setColor(1);
-        printf("Player 2 Wins\n");
-    	return 0;
-    }
-
-    flag = true;
-    // search for player 2 piece
-    searchChar = 'O';
-    for (int i = 0; i < SIZE; i++) {
-        if (strchr(board[i], searchChar) != NULL) {
-            // if a piece is found then set to false and break
-            flag = false;   
-            break;
-        }
-    }
-    
     if (flag == true) {
-        setColor(4);
-        printf("Player 1 Wins\n");
     	return 0;
-    } else
-        return 1;
+    }
 }
 
 
 ///play game in the function
 void playgame(char board[][SIZE], int i)
 {
-    int a = check(board);
-
-    if (a == 0) {
-   	   return;
+    if (check(board, 'X') == 0) {
+        setColor(1);
+        printf("Player 2 Wins\n");
+   	    return;
+    }
+    if (check(board, 'O') == 0)
+    {
+        setColor(4);
+        printf("Player 1 Wins\n");
+        return;
     }
 
     // if i is even then player 1 plays
