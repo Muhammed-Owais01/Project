@@ -2,6 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<stdbool.h>
+#include <Windows.h>
 #define SIZE 8
 
 
@@ -12,7 +13,7 @@ char board[SIZE][SIZE] =  {
                           {'X', ' ', 'X', ' ', 'X', ' ', 'X', ' '},
                           {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
                           {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-                          {' ', 'O', ' ', 'O', ' ', ' ', ' ', 'O'},
+                          {' ', 'O', ' ', 'O', ' ', 'O', ' ', 'O'},
                           {'O', ' ', 'O', ' ', 'O', ' ', 'O', ' '},
                           {' ', 'O', ' ', 'O', ' ', 'O', ' ', 'O'}};
 // To confirm is a piece is present on the location
@@ -70,27 +71,69 @@ int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,in
  	
 }
 
+void setColor(int color)
+{
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
+
+void pieceColor(char piece)
+{
+    if (piece == 'X')
+    {
+        // 4 is the color red
+        setColor(4);
+    } else if (piece == 'O')
+    {
+        // 1 is the color blue
+        setColor(1);
+    }
+}
+
 //Display the board
 void display(char board[][SIZE])
 {
+    // 14 is the color yellow
+    setColor(14);
     printf("====================\n");
     printf("  ||0|1|2|3|4|5|6|7|\n");
     printf(" _|=================\n");
 
     for (int i = 0; i < SIZE;i++) {
+        setColor(14);
       	printf("|%d|", i);
         for (int j = 0; j < SIZE; j++) {
+            setColor(14);
       		printf("|");
-      		printf("%c",board[i][j]);
+            pieceColor(board[i][j]);
+            if (board[i][j] == 'K')
+            {
+                setColor(4);
+            }
+            if (board[i][j] == 'Q') {
+                setColor(1);
+                printf("K");
+            }
+            else 
+      		    printf("%c",board[i][j]);
       	}
+        setColor(14);
       	printf("|");
         if (i==7) {
          	printf("\n====================");
         }
       	printf("\n");
+        // to reset back to white for the rest
+        setColor(15);
     }
 
-    printf("Player 1 is: X\nPlayer 2 is: O\n");
+    printf("Player 1 is: ");
+    setColor(4);
+    printf("X\n");
+    setColor(15);
+    printf("Player 2 is: ");
+    setColor(1);
+    printf("O\n");
+    setColor(15);
 
     return;
 }//end of display
@@ -159,7 +202,7 @@ int king(char board[][SIZE],int current_row,int current_col,int diag_row,int dia
                         return 1;
                     }    
                 default: return 0;
-            }//end of switcah
+            }//end of switch
         }//end of if (left_or_right > 0)
     }//end of if b == 2 && a == 2
 
@@ -322,6 +365,7 @@ int check(char board[][SIZE])
     }
     
     if (flag==true) {
+        setColor(1);
         printf("Player 2 Wins\n");
     	return 0;
     }
@@ -338,6 +382,7 @@ int check(char board[][SIZE])
     }
     
     if (flag == true) {
+        setColor(4);
         printf("Player 1 Wins\n");
     	return 0;
     } else
@@ -356,13 +401,19 @@ void playgame(char board[][SIZE], int i)
 
     // if i is even then player 1 plays
     if (i % 2 == 0) {
-   	    printf("Turn of Player 1\n");
+   	    printf("Turn of ");
+        setColor(4);
+        printf("Player 1\n");
+        setColor(15);
         // Call the function for player 1 input
    	    playerInput(board, 'X');
     }
     // else player 2 plays
     else {
-   	    printf("Turn of Player 2\n");
+   	    printf("Turn of ");
+        setColor(1);
+        printf("Player 2\n");
+        setColor(15);
         // Call the function for player 2 input
    	    playerInput(board, 'O');
     }
