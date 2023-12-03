@@ -94,7 +94,7 @@ void display(char board[][SIZE])
 {
     // 14 is the color yellow
     setColor(14);
-    printf("====================\n");
+    printf("  ==================\n");
     printf("  ||0|1|2|3|4|5|6|7|\n");
     printf(" _|=================\n");
 
@@ -221,6 +221,18 @@ void playerInput(char board[][SIZE], char piece, bool flag)
 {
     system("cls");
     display(board);
+    if (piece == 'X' || piece == 'K')
+    {
+        printf("Turn of ");
+        setColor(4);
+        printf("Player 1\n");
+        setColor(15);
+    } else {
+        printf("Turn of ");
+        setColor(1);
+        printf("Player 2\n");
+        setColor(15);
+    }
     // to find current location of the piece
     int current_row, current_col;
     char current_letter, final_letter, choice;
@@ -228,6 +240,7 @@ void playerInput(char board[][SIZE], char piece, bool flag)
     int final_row, final_col;
     int i = 1;
     int a, fail = 0;
+    // base condition for recursion
     if (flag == false)
     {
         return;
@@ -248,7 +261,7 @@ void playerInput(char board[][SIZE], char piece, bool flag)
         // a = 1 means input by user was correct
         else {
             if (a == 0) {
-                // if king is there then i = -1, so that loop can end
+                // if king or queen is there then i = -1, so that loop can end
                 if (board[current_row][current_col] != 'K' && board[current_row][current_col] != 'Q') {
                     printf("INVALID LOCATION ENTERED: YOU DONT HAVE A PIECE HERE\n");
                 } else i = -1;
@@ -303,6 +316,7 @@ void playerInput(char board[][SIZE], char piece, bool flag)
         }
         // b = 2 and c = 2 means user is to move two locations
         else if (b == 2 && c == 2) {
+            // if X then subtract row, if O then add to row for capture_piece function
             if (piece == 'X') {
                 final_row--;               
             } else if (piece == 'O') {
@@ -336,6 +350,7 @@ void playerInput(char board[][SIZE], char piece, bool flag)
                     default: i = -1;
                 }//end of switch
             }//end of if difcol > 0
+            // reset the value of final_row to the way it was before so that it can move the piece correctly
             if (piece == 'X') {
                 final_row++;               
             } else if (piece == 'O') {
@@ -356,11 +371,14 @@ void playerInput(char board[][SIZE], char piece, bool flag)
                 break;
             }
         }
-        printf("Do you want to choose another piece? (Y/N): ");
-        scanf(" %c", &choice);
-        if (toupper(choice) == 'Y') {
-            playerInput(board, piece, true);
-            return;
+        // if user has failed even once then let him choose another piece
+        if (fail > 0) {
+            printf("Do you want to choose another piece? (Y/N): ");
+            scanf(" %c", &choice);
+            if (toupper(choice) == 'Y') {
+                playerInput(board, piece, true);
+                return;
+            }
         }
     }
 
@@ -408,19 +426,11 @@ void playGame(char board[][SIZE], int i)
 
     // if i is even then player 1 plays
     if (i % 2 == 0) {
-   	    printf("Turn of ");
-        setColor(4);
-        printf("Player 1\n");
-        setColor(15);
         // Call the function for player 1 input
    	    playerInput(board, 'X', true);
     }
     // else player 2 plays
     else {
-   	    printf("Turn of ");
-        setColor(1);
-        printf("Player 2\n");
-        setColor(15);
         // Call the function for player 2 input
    	    playerInput(board, 'O', true);
     }
