@@ -17,6 +17,34 @@ char board[SIZE][SIZE] =  {
                           {' ', 'O', ' ', 'O', ' ', 'O', ' ', 'O'},
                           {'O', ' ', 'O', ' ', 'O', ' ', 'O', ' '},
                           {' ', 'O', ' ', 'O', ' ', 'O', ' ', 'O'}};
+
+void pauseOrResume(char board[][SIZE], int game)
+{
+    if (game == 1 || game == 3)
+    {
+        FILE *ptr = fopen("Data.txt", "w");
+        for (int i = 0; i < SIZE; ++i)
+        {
+            for (int j = 0; j < SIZE; ++j)
+            {
+                fputc(board[i][j], ptr);
+            }
+        }
+    }
+    else if (game == 2)
+    {
+        FILE *ptr = fopen("Data.txt", "r");
+        for (int i = 0; i < SIZE; ++i)
+        {
+            for (int j = 0; j < SIZE; ++j)
+            {
+                board[i][j] = fgetc(ptr);
+            }
+        }
+    }
+    
+}
+
 // To confirm is a piece is present on the location
 int confirm_piece(char board[][SIZE],int current_row,int current_column,char ch)
 {
@@ -412,6 +440,7 @@ int check(char board[][SIZE], char searchChar, char kingOrQueen)
 // play game in the function
 void playGame(char board[][SIZE], int i)
 {
+    char choice;
     if (check(board, 'X', 'K') == 0) {
         setColor(1);
         printf("Player 2 Wins\n");
@@ -424,6 +453,14 @@ void playGame(char board[][SIZE], int i)
         return;
     }
 
+    if (i == 3000)
+    {
+        int newResume;
+        printf("Do You Want To Start A New Game or Resume A Previous One:\n1- New Game\n2- Resume\nInput: ");
+        scanf("%d", &newResume);
+        pauseOrResume(board, newResume);
+    }
+
     // if i is even then player 1 plays
     if (i % 2 == 0) {
         // Call the function for player 1 input
@@ -433,6 +470,18 @@ void playGame(char board[][SIZE], int i)
     else {
         // Call the function for player 2 input
    	    playerInput(board, 'O', true);
+    }
+
+    if (i % 2 != 0) {
+        system("cls");
+        display(board);
+        printf("Do You Want To Pause?(Y/N): ");
+        scanf(" %c", &choice);
+        if (choice == 'Y')
+        {
+            pauseOrResume(board, 3);
+            return;
+        }
     }
 
     playGame(board,i-1);
