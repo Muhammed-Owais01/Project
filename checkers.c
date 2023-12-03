@@ -20,6 +20,7 @@ char board[SIZE][SIZE] =  {
 
 void pauseOrResume(char board[][SIZE], int game)
 {
+    // 1 means newgame, 3 means pause
     if (game == 1 || game == 3)
     {
         FILE *ptr = fopen("Data.txt", "w");
@@ -34,11 +35,14 @@ void pauseOrResume(char board[][SIZE], int game)
     else if (game == 2)
     {
         FILE *ptr = fopen("Data.txt", "r");
-        for (int i = 0; i < SIZE; ++i)
-        {
-            for (int j = 0; j < SIZE; ++j)
+        // if file doesnt exist then dont write anything to array, because array would become empty
+        if (ptr != NULL) {
+            for (int i = 0; i < SIZE; ++i)
             {
-                board[i][j] = fgetc(ptr);
+                for (int j = 0; j < SIZE; ++j)
+                {
+                    board[i][j] = fgetc(ptr);
+                }
             }
         }
     }
