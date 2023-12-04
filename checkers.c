@@ -26,10 +26,7 @@ void pauseOrResume(char board[][SIZE], int game)
         FILE *ptr = fopen("Data.txt", "w");
         for (int i = 0; i < SIZE; ++i)
         {
-            for (int j = 0; j < SIZE; ++j)
-            {
-                fputc(board[i][j], ptr);
-            }
+            fputs(board[i], ptr);
         }
     }
     else if (game == 2)
@@ -477,11 +474,12 @@ void playGame(char board[][SIZE], int i)
     }
 
     if (i % 2 != 0) {
+        // cls and display again so that player 2 updated array is shown to user
         system("cls");
         display(board);
         printf("Do You Want To Pause?(Y/N): ");
         scanf(" %c", &choice);
-        if (choice == 'Y')
+        if (toupper(choice) == 'Y')
         {
             pauseOrResume(board, 3);
             return;
