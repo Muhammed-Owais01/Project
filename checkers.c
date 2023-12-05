@@ -9,10 +9,10 @@
 
 // Initializing board
 char board[SIZE][SIZE] =  {
-                          {'X', ' ', 'X', ' ', 'X', ' ', 'X', ' '},
-                          {' ', 'X', ' ', 'X', ' ', 'X', ' ', 'X'},
-                          {'X', ' ', 'X', ' ', 'X', ' ', 'X', ' '},
                           {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+                          {' ', ' ', 'X', ' ', ' ', ' ', ' ', 'X'},
+                          {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+                          {' ', ' ', ' ', ' ', 'O', 'O', ' ', ' '},
                           {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
                           {' ', 'O', ' ', 'O', ' ', 'O', ' ', 'O'},
                           {'O', ' ', 'O', ' ', 'O', ' ', 'O', ' '},
@@ -473,6 +473,18 @@ void playGame(char board[][SIZE], int i)
    	    playerInput(board, 'O', true);
     }
 
+    if (check(board, 'X', 'K') == 0) {
+        setColor(1);
+        printf("Player 2 Wins\n");
+        return;
+    }
+    if (check(board, 'O', 'Q') == 0)
+    {
+        setColor(4);
+        printf("Player 1 Wins\n");
+        return;
+    }
+
     if (i % 2 != 0) {
         // cls and display again so that player 2 updated array is shown to user
         system("cls");
@@ -499,6 +511,7 @@ int main(int argc, char const *argv[])
 	int c,r;
     
     playGame(board,3000);
+    Sleep(1000);
      
 	return 0;
 }
