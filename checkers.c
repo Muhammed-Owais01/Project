@@ -73,9 +73,6 @@ int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,in
     char current_piece = board[curent_row][curent_col];
  	char diag_piece;
 
-    printf("current_row: %d, current_col: %d\n", curent_row, curent_col);
-    printf("diag_row: %d, diag_col: %d\n", diag_row, diag_col);
-
     // checks which piece is at current location
  	if (current_piece == 'X' || current_piece == 'K') {
         diag_piece = 'O';
