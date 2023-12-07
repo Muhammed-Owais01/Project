@@ -9,10 +9,10 @@
 
 // Initializing board
 char board[SIZE][SIZE] =  {
+                          {'X', ' ', 'X', ' ', 'X', ' ', 'X', ' '},
+                          {' ', 'X', ' ', 'X', ' ', 'X', ' ', 'X'},
+                          {'X', ' ', 'X', ' ', 'X', ' ', 'X', ' '},
                           {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-                          {' ', ' ', 'X', ' ', ' ', ' ', ' ', 'X'},
-                          {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-                          {' ', ' ', ' ', ' ', 'O', 'O', ' ', ' '},
                           {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
                           {' ', 'O', ' ', 'O', ' ', 'O', ' ', 'O'},
                           {'O', ' ', 'O', ' ', 'O', ' ', 'O', ' '},
@@ -73,6 +73,9 @@ int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,in
     char current_piece = board[curent_row][curent_col];
  	char diag_piece;
 
+    printf("current_row: %d, current_col: %d\n", curent_row, curent_col);
+    printf("diag_row: %d, diag_col: %d\n", diag_row, diag_col);
+
     // checks which piece is at current location
  	if (current_piece == 'X' || current_piece == 'K') {
         diag_piece = 'O';
@@ -92,7 +95,9 @@ int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,in
     }
     // replace the middle piece with space
     else {
-        if (board[diag_row][diag_col] == diag_piece) {
+        if (board[diag_row][diag_col] == diag_piece || 
+            (board[diag_row][diag_col] == 'K' && current_piece == 'O') ||
+            (board[diag_row][diag_col] == 'Q' && current_piece == 'X')) {
  	     	board[diag_row][diag_col] = ' ';
             return 1;
         }
@@ -194,8 +199,10 @@ void move_piece(char board[][SIZE],int irow,int icol,int frow,int fcol,char a)
 } // end of move_piece
 
 // king function 
-int king(char board[][SIZE],int current_row,int current_col,int diag_row,int diag_col, int up_or_down,int left_or_right,int b,int c)
+int king(char board[][SIZE],int current_row,int current_col,int final_row,int final_col, int up_or_down,int left_or_right,int b,int c)
 {
+    // printf("up_or_down: %d, left_or_right: %d\n", up_or_down, left_or_right);
+    // printf("final_row: %d, final_col: %d\n", final_row, final_col);
     // b and c are mod of up_or_down and left_or_right
     // if it can move 2 rows and 2 cols (simple words: will it move 2 spaces diagonally)
     if (b == 2 && c == 2) {
@@ -204,31 +211,43 @@ int king(char board[][SIZE],int current_row,int current_col,int diag_row,int dia
             switch (left_or_right) {
                 // when moving rightwards
                 case 2:
+                    // printf("UP CASE 2\n");
                     // if capture_piece is not 1 then that means incorrect final location was entered
-                    if (capture_piece(board, diag_row + 1,diag_col + 1, current_row, current_col) != 1) {
+                    if (capture_piece(board, final_row + 1,final_col + 1, current_row, current_col) != 1) {
                         return 1;
                     }
+                    break;
                 // when moving leftwards
                 case -2:
-                    if (capture_piece(board, diag_row + 1, diag_col - 1, current_row, current_col) != 1) {
+                    // printf("UP CASE -2\n");
+                    if (capture_piece(board, final_row + 1, final_col - 1, current_row, current_col) != 1) {
                         return 1;
                     }
+                    break;
                 default: return 0;
             }//end of switch
+            return 0;
         }//end of if (up_or_down > 0)
         // same as above but for downwards
         else if (up_or_down < 0) {
             switch (left_or_right) {
                 case -2:
-                    if (capture_piece(board, diag_row - 1, diag_col - 1, current_row, current_col) != 1) {
+                    // printf("DOWN CASE -2\n");
+                    if (capture_piece(board, final_row - 1, final_col - 1, current_row, current_col) != 1) {
+                        // printf("GONN RETURN NOW\n");
                         return 1;
+                        // printf("I DIDNT RETURN\n");
                     }
+                    break;
                 case 2: 
-                    if (capture_piece(board, diag_row - 1, diag_col + 1, current_row, current_col) != 1) {
+                    // printf("DOWN CASE 2\n");
+                    if (capture_piece(board, final_row - 1, final_col + 1, current_row, current_col) != 1) {
                         return 1;
                     }    
+                    break;
                 default: return 0;
             }//end of switch
+            return 0;
         }//end of if (left_or_right > 0)
     }//end of if b == 2 && a == 2
 
@@ -237,7 +256,7 @@ int king(char board[][SIZE],int current_row,int current_col,int diag_row,int dia
     // if user wants to move 1 space only
     if (b == 1 && c == 1) {
         // if piece already there or not
-        if (board[diag_row][diag_col] != ' ') {
+        if (board[final_row][final_col] != ' ') {
             printf("INVALID LOCATION ENTERED: A PIECE IS ALREADY THERE\n");
             return 1;
         } else return 0;
@@ -361,6 +380,7 @@ void playerInput(char board[][SIZE], char piece, bool flag)
                         // final_row-1, final_col-1 gives the middle location
        	  		        if (capture_piece(board, final_row, final_col - 1, current_row, current_col) != 1) {
                             fail++;
+                            printf("case -2\n");
                             break;
        	  		        }
                         else {
@@ -370,6 +390,7 @@ void playerInput(char board[][SIZE], char piece, bool flag)
                     case 2: 
        	  		        if (capture_piece(board, final_row, final_col + 1, current_row, current_col) != 1) {
                             fail++;
+                            printf("case 2\n");
                             break;
        	  		        }
                         else {
@@ -511,7 +532,7 @@ int main(int argc, char const *argv[])
 	int c,r;
     
     playGame(board,3000);
-    Sleep(1000);
+    Sleep(5000);
      
 	return 0;
 }
