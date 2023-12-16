@@ -68,7 +68,7 @@ int confirm_space(char board[][SIZE],int final_row,int final_column)
 } //end of confirm_space
 
 // this function is responsible for removing a piece on the board
-int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,int curent_col)
+int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,int curent_col, bool isComputer)
 {
     char current_piece = board[curent_row][curent_col];
  	char diag_piece;
@@ -82,12 +82,14 @@ int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,in
 
  	// if middle location empty, return 0
  	if (board[diag_row][diag_col] == ' ') {
-        printf("INVALID LOCATION ENTERED: YOU CAN ONLY MOVE ONE SPACE DIAGONALLY!\n");
+        if (isComputer == false)
+            printf("INVALID LOCATION ENTERED: YOU CAN ONLY MOVE ONE SPACE DIAGONALLY!\n");
         return 0;
  	}
     // if middle location has the players piece present in current location return 0
     else if (board[diag_row][diag_col] == current_piece) {
-        printf("INVALID LOCATION ENTERED: YOUR PIECE IS ALREADY THERE\n");
+        if (isComputer == false)
+            printf("INVALID LOCATION ENTERED: YOUR PIECE IS ALREADY THERE DIAGONALLY\n");
         return 0;
     }
     // replace the middle piece with space
@@ -196,10 +198,8 @@ void move_piece(char board[][SIZE],int irow,int icol,int frow,int fcol,char a)
 } // end of move_piece
 
 // king function 
-int king(char board[][SIZE],int current_row,int current_col,int final_row,int final_col, int up_or_down,int left_or_right,int b,int c)
+int king(char board[][SIZE],int current_row,int current_col,int final_row,int final_col, int up_or_down,int left_or_right,int b,int c, bool isComputer)
 {
-    // printf("up_or_down: %d, left_or_right: %d\n", up_or_down, left_or_right);
-    // printf("final_row: %d, final_col: %d\n", final_row, final_col);
     // b and c are mod of up_or_down and left_or_right
     // if it can move 2 rows and 2 cols (simple words: will it move 2 spaces diagonally)
     if (b == 2 && c == 2) {
@@ -208,16 +208,14 @@ int king(char board[][SIZE],int current_row,int current_col,int final_row,int fi
             switch (left_or_right) {
                 // when moving rightwards
                 case 2:
-                    // printf("UP CASE 2\n");
                     // if capture_piece is not 1 then that means incorrect final location was entered
-                    if (capture_piece(board, final_row + 1,final_col + 1, current_row, current_col) != 1) {
+                    if (capture_piece(board, final_row + 1,final_col + 1, current_row, current_col, false) != 1) {
                         return 1;
                     }
                     break;
                 // when moving leftwards
                 case -2:
-                    // printf("UP CASE -2\n");
-                    if (capture_piece(board, final_row + 1, final_col - 1, current_row, current_col) != 1) {
+                    if (capture_piece(board, final_row + 1, final_col - 1, current_row, current_col, false) != 1) {
                         return 1;
                     }
                     break;
@@ -229,16 +227,12 @@ int king(char board[][SIZE],int current_row,int current_col,int final_row,int fi
         else if (up_or_down < 0) {
             switch (left_or_right) {
                 case -2:
-                    // printf("DOWN CASE -2\n");
-                    if (capture_piece(board, final_row - 1, final_col - 1, current_row, current_col) != 1) {
-                        // printf("GONN RETURN NOW\n");
+                    if (capture_piece(board, final_row - 1, final_col - 1, current_row, current_col, false) != 1) {
                         return 1;
-                        // printf("I DIDNT RETURN\n");
                     }
                     break;
                 case 2: 
-                    // printf("DOWN CASE 2\n");
-                    if (capture_piece(board, final_row - 1, final_col + 1, current_row, current_col) != 1) {
+                    if (capture_piece(board, final_row - 1, final_col + 1, current_row, current_col, false) != 1) {
                         return 1;
                     }    
                     break;
@@ -254,7 +248,8 @@ int king(char board[][SIZE],int current_row,int current_col,int final_row,int fi
     if (b == 1 && c == 1) {
         // if piece already there or not
         if (board[final_row][final_col] != ' ') {
-            printf("INVALID LOCATION ENTERED: A PIECE IS ALREADY THERE\n");
+                if (isComputer == false)
+                    printf("INVALID LOCATION ENTERED: A PIECE IS ALREADY THERE\n");
             return 1;
         } else return 0;
     } else
@@ -326,23 +321,19 @@ void playerInput(char board[][SIZE], char piece, bool flag)
 
         int difrow = current_row - final_row;
         int difcol = current_col - final_col;
-        int b = difrow; // use as a mod function for row
-        int c = difcol; // use as a mod function for col
-
-        if (difrow < 0) {
-            b = difrow * (-1);
-        } 
-
-        if (difcol < 0) {
-        	c = difcol * (-1);
-        }
+        int b = abs(difrow); // use as a mod function for row
+        int c = abs(difcol); // use as a mod function for col
 
         if ((final_row < 0 || final_row > 7) || (final_col < 0 || final_col > 7)) {
             fail++;
        	    printf("INVALID INPUT: OUT OF BOUNDS!\n");
         }
+          // to check if user wants to move to the current location
+          else if (b == 0 || c == 0) {
+            fail++;
+            printf("You cannot move to the location you are already at\n");
           // to check if user wants to move more than 2 locations
-          else if (difcol > 2 || difrow > 2) {
+        } else if (b > 2 || c > 2) {
             fail++;
        	    printf("You cannot move to this location\n");
         } else if (b != c) {
@@ -350,7 +341,7 @@ void playerInput(char board[][SIZE], char piece, bool flag)
             printf("INVALID LOCATION ENTERED: YOU CAN ONLY MOVE DIAGONALLY\n");
         } else if (board[current_row][current_col] == 'K' || board[current_row][current_col] == 'Q') {
             // ki stores 0 if king can move, 1 if king cant move
-            int ki = king(board, current_row, current_col, final_row, final_col, difrow, difcol, b, c);
+            int ki = king(board, current_row, current_col, final_row, final_col, difrow, difcol, b, c, false);
 
             if (ki == 0) {
                 i = -1;
@@ -359,6 +350,11 @@ void playerInput(char board[][SIZE], char piece, bool flag)
             printf("INVALID LOCATION ENTERED: A PIECE IS ALREADY THERE\n");
             fail++;
         }
+        // this prevents the player 1 from moving upwards and player 2 downwards
+        else if ((difrow > 0 && piece == 'X') || (difrow < 0 && piece == 'O')) {
+            printf("INVALID LOCATION ENTERED!");
+            fail++;
+        } 
         // b = 2 and c = 2 means user is to move two locations
         else if (b == 2 && c == 2) {
             // if X then subtract row, if O then add to row for capture_piece function
@@ -367,17 +363,12 @@ void playerInput(char board[][SIZE], char piece, bool flag)
             } else if (piece == 'O') {
                 final_row++;
             }
-            // this prevents the player 1 from moving upwards and player 2 downwards
-        	if ((difrow > 0 && piece == 'X') || (difrow < 0 && piece == 'O')) {
-        		printf("INVALID LOCATION ENTERED!");
-                fail++;
-        	} else if ((difrow < 0 && piece == 'X') || (difrow > 0 && piece == 'O')) {
+            if ((difrow < 0 && piece == 'X') || (difrow > 0 && piece == 'O')) {
                 switch(difcol) {
                     case -2:
-                        // final_row-1, final_col-1 gives the middle location
-       	  		        if (capture_piece(board, final_row, final_col - 1, current_row, current_col) != 1) {
+                        // final_row, final_col-1 gives the middle location
+       	  		        if (capture_piece(board, final_row, final_col - 1, current_row, current_col, false) != 1) {
                             fail++;
-                            printf("case -2\n");
                             break;
        	  		        }
                         else {
@@ -385,9 +376,8 @@ void playerInput(char board[][SIZE], char piece, bool flag)
                             break;
                         }
                     case 2: 
-       	  		        if (capture_piece(board, final_row, final_col + 1, current_row, current_col) != 1) {
+       	  		        if (capture_piece(board, final_row, final_col + 1, current_row, current_col, false) != 1) {
                             fail++;
-                            printf("case 2\n");
                             break;
        	  		        }
                         else {
@@ -406,17 +396,8 @@ void playerInput(char board[][SIZE], char piece, bool flag)
        	}//end of if b == 2 && c == 2
 
        	else if (b == 1 && c == 1) {
-            if ((difrow > 0 && piece == 'X') || (difrow < 0 && piece == 'O')) {
-                printf("INVALID LOCATION ENTERED! YOU CANNOT MOVE UPWARDS\n");
-                fail++;
-            }
-            else if (board[final_row][final_col] != ' ') {
-       		   printf("INVALID LOCATION ENTERED: A PIECE IS ALREADY THERE\n");
-               fail++;
-       		} else {
-                i = -1; 
-                break;
-            }
+            i = -1; 
+            break;
         }
         // if user has failed even once then let him choose another piece
         if (fail > 0) {
@@ -434,6 +415,107 @@ void playerInput(char board[][SIZE], char piece, bool flag)
     return;
 } //end of input of player
 
+void computer(char board[][SIZE], char piece) 
+{
+    system("cls");
+    display(board);
+    int current_row, current_col, final_row, final_col, a, i;
+    while (1)
+    {
+        // random value 0 to 7 for row and col
+        current_row = rand() % 8;
+        current_col = rand() % 8;
+        // a stores 1 if piece is found there
+        a = confirm_piece(board, current_row, current_col, piece);
+        if (a == 0)
+        {
+            // if piece not found then see if at that location there is Q piece
+            if (board[current_row][current_col] == 'Q')
+                break; // break out of loop of Q is there
+        }
+        else
+            break; // break out of loop if a is not zero
+    }
+    i = 1;
+    int count = 0;
+    while (i == 1)
+    {
+        // counts the number of times loop repeats
+        count++;
+        // if count exceeds then recursive call so a different piece can be picked
+        // this is done so that after 100 tries of moving the current piece, the computer finds a different "O" piece instead
+        if (count == 100){
+            computer(board, piece);
+            return;
+        }
+        // finding final row and making sure its between 0 and 7 inclusive
+        do {
+            if (board[current_row][current_col] == 'Q') {
+                if (rand() % 2 == 0)
+                    final_row = current_row - rand() % 3;
+                else
+                    final_row = current_row + rand() % 3;
+            }
+            else
+                final_row = current_row - rand() % 3;
+        } while (final_row < 0 || final_row > 7);
+        // finding final col and making sure its between 0 and 7 inclusive
+        do {
+            if (rand() % 2 == 0)
+                final_col = current_col - rand() % 3;
+            else
+                final_col = current_col + rand() % 3;
+        } while (final_col < 0 || final_col > 7);
+        // a stores 1 if there is space where we are moving to
+        a = confirm_space(board, final_row, final_col);
+
+        int difrow = current_row - final_row;
+        int difcol = current_col - final_col;
+        int b = abs(difrow);
+        int c = abs(difcol);
+
+        if (b == 0 || c == 0)
+            continue; // repeat the loop if b or c are zero
+        if (b > 2 || c > 2)
+            continue; // repeat the loop if b or c are more than 2
+        else if (b != c)
+            continue; // repeat the loop if b is not equals to c
+        else if (board[current_row][current_col] == 'Q') {
+            // if its queen the call king function
+            int ki = king(board, current_row, current_col, final_row, final_col, difrow, difcol, b, c, true);
+
+            if (ki == 0)
+                i = -1; // if ki is zero that means king moved then get out of loop
+        }
+        else if (a == 0)
+            continue; // repeat the loop if no space
+        else if (difrow < 0)
+            continue; // repeat the loop if trying to move downwards
+        else if (b == 2 && c == 2) {
+                switch(difcol) {
+                    case -2:
+                        if (capture_piece(board, final_row + 1, final_col - 1, current_row, current_col, true) != 1)
+                            continue; // if couldnt capture the piece then repeat the loop
+                        else {
+                            i = -1;
+                            break;
+                        }
+                    case 2: 
+                        if (capture_piece(board, final_row + 1, final_col + 1, current_row, current_col, true) != 1)
+                            continue; // if if couldnt capture the piece then repeat the loop
+                        else {
+                            i = -1;
+                            break;
+                        }
+                }
+        }
+        else if (b == 1 && c == 1) {
+            i = -1;
+        }
+    }
+    move_piece(board, current_row, current_col, final_row, final_col, board[current_row][current_col]);
+    return;
+} // end of computer
 
 // this functon checks for base condition to stop game
 int check(char board[][SIZE], char searchChar, char kingOrQueen)
@@ -453,11 +535,12 @@ int check(char board[][SIZE], char searchChar, char kingOrQueen)
     if (flag == true) {
     	return 0;
     }
+    return 1;
 } // end of check
 
 
 // play game in the function
-void playGame(char board[][SIZE], int i)
+void playGame(char board[][SIZE], int i, int playerOrComputer)
 {
     char choice;
     if (check(board, 'X', 'K') == 0) {
@@ -483,12 +566,14 @@ void playGame(char board[][SIZE], int i)
     // if i is even then player 1 plays
     if (i % 2 == 0) {
         // Call the function for player 1 input
-   	    playerInput(board, 'X', true);
+        playerInput(board, 'X', true);
     }
     // else player 2 plays
+    else if (playerOrComputer == 1){
+        computer(board, 'O');
+    }
     else {
-        // Call the function for player 2 input
-   	    playerInput(board, 'O', true);
+        playerInput(board, 'O', true);
     }
 
     if (check(board, 'X', 'K') == 0) {
@@ -516,7 +601,7 @@ void playGame(char board[][SIZE], int i)
         }
     }
 
-    playGame(board,i-1);
+    playGame(board,i-1,playerOrComputer);
 
     return;
 } // end of playGame
@@ -524,11 +609,16 @@ void playGame(char board[][SIZE], int i)
 int main(int argc, char const *argv[])
 {
     system("cls");
-	display(board);
-    // c for col, r for row
-	int c,r;
-    
-    playGame(board,3000);
+	display(board); 
+
+    int choice;
+    printf("1: Player Vs Computer\n2: Player 1 Vs Player 2\nInput: ");
+    scanf("%d", &choice);
+
+    system("cls");
+    display(board);
+
+    playGame(board,3000,choice);
     Sleep(5000);
      
 	return 0;
