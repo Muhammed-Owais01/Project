@@ -1,7 +1,7 @@
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#include<stdbool.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include <ctype.h>
 #include <Windows.h>
 #define SIZE 8
@@ -17,7 +17,7 @@ char board[SIZE][SIZE] =  {
                           {' ', 'O', ' ', 'O', ' ', 'O', ' ', 'O'},
                           {'O', ' ', 'O', ' ', 'O', ' ', 'O', ' '},
                           {' ', 'O', ' ', 'O', ' ', 'O', ' ', 'O'}};
-
+// for saving, resume game state
 void pauseOrResume(char board[][SIZE], int game)
 {
     // 1 means newgame, 3 means pause
@@ -49,10 +49,10 @@ void pauseOrResume(char board[][SIZE], int game)
 // To confirm is a piece is present on the location
 int confirm_piece(char board[][SIZE],int current_row,int current_column,char ch)
 {
- 	// c for col 
- 	// r for row
- 	if (board[current_row][current_column] == ch)
- 		return 1;
+    // c for col 
+    // r for row
+    if (board[current_row][current_column] == ch)
+        return 1;
     else
         return 0;
 } //end of confirm_piece
@@ -61,31 +61,31 @@ int confirm_piece(char board[][SIZE],int current_row,int current_column,char ch)
 int confirm_space(char board[][SIZE],int final_row,int final_column) 
 {
     // if there is space or not
- 	if (board[final_row][final_column] == 'O'|| board[final_row][final_column] == 'X')
- 		return 0;
- 	else
+    if (board[final_row][final_column] == 'O'|| board[final_row][final_column] == 'X')
+        return 0;
+    else
         return 1;
 } //end of confirm_space
 
 // this function is responsible for removing a piece on the board
-int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,int curent_col, bool isComputer)
+int capture_piece(char board[][SIZE],int diag_row,int diag_col,int current_row,int current_col, bool isComputer)
 {
-    char current_piece = board[curent_row][curent_col];
- 	char diag_piece;
+    char current_piece = board[current_row][current_col];
+    char diag_piece;
 
     // checks which piece is at current location
- 	if (current_piece == 'X' || current_piece == 'K') {
+    if (current_piece == 'X' || current_piece == 'K') {
         diag_piece = 'O';
- 	} else if (current_piece == 'O' || current_piece == 'Q') {
+    } else if (current_piece == 'O' || current_piece == 'Q') {
         diag_piece = 'X';
     }
 
- 	// if middle location empty, return 0
- 	if (board[diag_row][diag_col] == ' ') {
+    // if middle location empty, return 0
+    if (board[diag_row][diag_col] == ' ') {
         if (isComputer == false)
             printf("INVALID LOCATION ENTERED: YOU CAN ONLY MOVE ONE SPACE DIAGONALLY!\n");
         return 0;
- 	}
+    }
     // if middle location has the players piece present in current location return 0
     else if (board[diag_row][diag_col] == current_piece) {
         if (isComputer == false)
@@ -99,11 +99,11 @@ int capture_piece(char board[][SIZE],int diag_row,int diag_col,int curent_row,in
             (board[diag_row][diag_col] == 'Q' && current_piece == 'X') ||
             (board[diag_row][diag_col] == 'Q' && current_piece == 'K') ||
             (board[diag_row][diag_col] == 'K' && current_piece == 'Q')) {
- 	     	board[diag_row][diag_col] = ' ';
+            board[diag_row][diag_col] = ' ';
             return 1;
         }
- 	}
- 	
+    }
+    
 } // end of capture_piece
 
 void setColor(int color)
@@ -135,10 +135,10 @@ void display(char board[][SIZE])
 
     for (int i = 0; i < SIZE;i++) {
         setColor(14);
-      	printf("|%c|", i + 65);
+        printf("|%c|", i + 65);
         for (int j = 0; j < SIZE; j++) {
             setColor(14);
-      		printf("|");
+            printf("|");
             pieceColor(board[i][j]);
             if (board[i][j] == 'K')
             {
@@ -149,14 +149,14 @@ void display(char board[][SIZE])
                 printf("K");
             }
             else 
-      		    printf("%c",board[i][j]);
-      	}
-        setColor(14);
-      	printf("|");
-        if (i==7) {
-         	printf("\n====================");
+                printf("%c",board[i][j]);
         }
-      	printf("\n");
+        setColor(14);
+        printf("|");
+        if (i==7) {
+            printf("\n====================");
+        }
+        printf("\n");
         // to reset back to white for the rest
         setColor(15);
     }
@@ -172,7 +172,6 @@ void display(char board[][SIZE])
 
     return;
 } //end of display
-
 
 // this function moves a piece, and replaces space in a previous location the piece was at
 // it also is responsible for creating king piece
@@ -298,7 +297,7 @@ void playerInput(char board[][SIZE], char piece, bool flag)
         a =  confirm_piece(board, current_row, current_col, piece);
         // checks if input was out of bounds
         if ((current_row < 0 || current_row > 7) || (current_col < 0 || current_col > 7)) {
-       	    printf("INVALID INPUT: OUT OF BOUNDS!\n");
+            printf("INVALID INPUT: OUT OF BOUNDS!\n");
         } 
         // a = 1 means input by user was correct
         else {
@@ -328,7 +327,7 @@ void playerInput(char board[][SIZE], char piece, bool flag)
 
         if ((final_row < 0 || final_row > 7) || (final_col < 0 || final_col > 7)) {
             fail++;
-       	    printf("INVALID INPUT: OUT OF BOUNDS!\n");
+            printf("INVALID INPUT: OUT OF BOUNDS!\n");
         }
           // to check if user wants to move to the current location
           else if (b == 0 || c == 0) {
@@ -337,7 +336,7 @@ void playerInput(char board[][SIZE], char piece, bool flag)
           // to check if user wants to move more than 2 locations
         } else if (b > 2 || c > 2) {
             fail++;
-       	    printf("You cannot move to this location\n");
+            printf("You cannot move to this location\n");
         } else if (b != c) {
             fail++;
             printf("INVALID LOCATION ENTERED: YOU CAN ONLY MOVE DIAGONALLY\n");
@@ -369,19 +368,19 @@ void playerInput(char board[][SIZE], char piece, bool flag)
                 switch(difcol) {
                     case -2:
                         // final_row, final_col-1 gives the middle location
-       	  		        if (capture_piece(board, final_row, final_col - 1, current_row, current_col, false) != 1) {
+                        if (capture_piece(board, final_row, final_col - 1, current_row, current_col, false) != 1) {
                             fail++;
                             break;
-       	  		        }
+                        }
                         else {
                             i = -1;
                             break;
                         }
                     case 2: 
-       	  		        if (capture_piece(board, final_row, final_col + 1, current_row, current_col, false) != 1) {
+                        if (capture_piece(board, final_row, final_col + 1, current_row, current_col, false) != 1) {
                             fail++;
                             break;
-       	  		        }
+                        }
                         else {
                             i = -1;
                             break;
@@ -395,9 +394,9 @@ void playerInput(char board[][SIZE], char piece, bool flag)
             } else if (piece == 'O') {
                 final_row--;
             }
-       	}//end of if b == 2 && c == 2
+        }//end of if b == 2 && c == 2
 
-       	else if (b == 1 && c == 1) {
+        else if (b == 1 && c == 1) {
             i = -1; 
             break;
         }
@@ -421,6 +420,8 @@ void computer(char board[][SIZE], char piece)
 {
     system("cls");
     display(board);
+    printf("Computer Is Now Going To Move A Piece");
+    Sleep(2000);
     int current_row, current_col, final_row, final_col, a, i;
     while (1)
     {
@@ -535,7 +536,7 @@ int check(char board[][SIZE], char searchChar, char kingOrQueen)
     }
     
     if (flag == true) {
-    	return 0;
+        return 0;
     }
     return 1;
 } // end of check
@@ -548,7 +549,7 @@ void playGame(char board[][SIZE], int i, int playerOrComputer)
     if (check(board, 'X', 'K') == 0) {
         setColor(1);
         printf("Player 2 Wins\n");
-   	    return;
+        return;
     }
     if (check(board, 'O', 'Q') == 0)
     {
@@ -577,7 +578,10 @@ void playGame(char board[][SIZE], int i, int playerOrComputer)
     else {
         playerInput(board, 'O', true);
     }
-
+    
+    system("cls");
+    display(board);
+    
     if (check(board, 'X', 'K') == 0) {
         setColor(1);
         printf("Player 2 Wins\n");
@@ -649,7 +653,7 @@ int main(int argc, char const *argv[])
         return 0;
 
     system("cls");
-	display(board); 
+    display(board); 
     
 
     int choice;
@@ -662,5 +666,5 @@ int main(int argc, char const *argv[])
     playGame(board,3000,choice);
     Sleep(5000);
      
-	return 0;
+    return 0;
 }
